@@ -9,13 +9,22 @@ import {
   Users, 
   Settings, 
   LogOut,
-  CreditCard 
+  CreditCard,
+  Layers,
+  Award,
+  Crown,
+  Video
 } from 'lucide-react'
+import { logout } from '@/components/auth/AuthGuard'
 
 const menuItems = [
   { icon: BarChart3, label: 'Analytics', href: '/' },
   { icon: Users, label: 'Users', href: '/users' },
   { icon: CreditCard, label: 'Subscriptions', href: '/subscriptions' },
+  { icon: Layers, label: 'Levels', href: '/levels' },
+  { icon: Award, label: 'Badges', href: '/badges' },
+  { icon: Crown, label: 'Titles', href: '/titles' },
+  { icon: Video, label: 'Videos', href: '/videos' },
   { icon: Package, label: 'Content', href: '/content' },
   { icon: MessageSquare, label: 'Support', href: '/support' },
 ]
@@ -64,7 +73,10 @@ export function Sidebar() {
           <Settings size={20} />
           <span className="font-medium">Settings</span>
         </button>
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+        <button 
+          onClick={logout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+        >
           <LogOut size={20} />
           <span className="font-medium">Sign Out</span>
         </button>

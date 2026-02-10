@@ -1,13 +1,14 @@
 'use client'
 
 import { ReactNode, useEffect, useState } from 'react'
+import { AuthGuard } from '@/components/auth/AuthGuard'
 
 interface AppProviderProps {
   children: ReactNode
 }
 
 /**
- * AppProvider - Manages global app state (theme)
+ * AppProvider - Manages global app state (theme) and authentication
  * Removed Zustand dependency - using simple React state + localStorage
  */
 export function AppProvider({ children }: AppProviderProps) {
@@ -31,5 +32,5 @@ export function AppProvider({ children }: AppProviderProps) {
     return null
   }
 
-  return <>{children}</>
+  return <AuthGuard>{children}</AuthGuard>
 }

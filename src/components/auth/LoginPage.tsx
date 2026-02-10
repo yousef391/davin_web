@@ -22,42 +22,42 @@ export function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Static admin credentials
+  const ADMIN_EMAIL = 'admin@gmail.com'
+  const ADMIN_PASSWORD = 'Admin123'
+
   /**
-   * Handle email/password login
+   * Handle email/password login with static credentials
    * 
-   * Flow:
-   * 1. User submits form
-   * 2. We call authService.login() which sends request to backend
-   * 3. Backend validates credentials with Supabase
-   * 4. If valid, backend returns tokens + user data
-   * 5. authService.login() saves tokens to localStorage
-   * 6. We redirect to dashboard
+   * For admin dashboard security, we use hardcoded credentials.
+   * In production, you would want to use proper authentication.
    */
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault() // Prevent page refresh
     setError('') // Clear any previous errors
     setIsLoading(true) // Show loading state
 
+    // Simulate network delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 500))
+
     try {
-      // Call our auth service to login
-      const response = await authService.login({ email, password })
-      
-      // Check if login was successful
-      if (response.success) {
-        console.log('✅ Login successful!', response.data)
+      // Check static credentials
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        console.log('✅ Login successful!')
+        
+        // Store auth state in localStorage
+        localStorage.setItem('admin_authenticated', 'true')
+        localStorage.setItem('admin_email', email)
         
         // Redirect to main dashboard
         router.push('/')
       } else {
-        // Should not happen (would throw error instead)
-        setError(response.message || 'Login failed')
+        setError('Invalid email or password. Please try again.')
       }
     } catch (err: any) {
-      // Handle errors (wrong password, network issues, etc.)
       console.error('❌ Login failed:', err)
-      setError(err.message || 'Login failed. Please check your credentials.')
+      setError('Login failed. Please try again.')
     } finally {
-      // Always stop loading, even if error
       setIsLoading(false)
     }
   }
@@ -157,7 +157,8 @@ export function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 z-10 p-1 focus:outline-none"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>

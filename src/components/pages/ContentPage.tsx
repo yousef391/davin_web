@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Search, Upload, Video, Image, Music, Gamepad2, Filter, Plus, MoreVertical, Eye, Download, Trash2, AlertCircle, Loader2 } from 'lucide-react'
 import * as contentAPI from '@/lib/api/content'
+import { AssetPicker } from '../ui/AssetPicker'
+import { CreateContentModal } from './CreateContentModal'
 
 type ContentType = 'video' | 'template' | 'game' | 'audio' | 'all'
 
@@ -14,6 +16,7 @@ export function ContentPage() {
   const [activeTab, setActiveTab] = useState<ContentType>('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [filterCategory, setFilterCategory] = useState<string>('all')
+  const [showAssetPicker, setShowAssetPicker] = useState(false)
 
   // Fetch content and stats from backend
   useEffect(() => {
@@ -96,7 +99,9 @@ export function ContentPage() {
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Content Management</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Manage videos, templates, games, and audio resources</p>
         </div>
-        <button className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors">
+        <button 
+          onClick={() => setShowAssetPicker(true)}
+          className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors">
           <Upload size={20} />
           Upload Content
         </button>
@@ -260,10 +265,26 @@ export function ContentPage() {
           <div className="text-6xl mb-4">📦</div>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">No content found</h3>
           <p className="text-gray-500 dark:text-gray-400 mb-6">Try adjusting your search or filters</p>
-          <button className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors mx-auto">
+          <button 
+            onClick={() => setShowAssetPicker(true)}
+            className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg transition-colors mx-auto">
             <Plus size={20} />
             Upload New Content
           </button>
+        </div>
+      )}
+      {/* Create Content Modal */}
+      {showAssetPicker && (
+        <div className="z-50">
+          <CreateContentModal
+            onClose={() => setShowAssetPicker(false)}
+            onCreated={() => {
+              // Refresh content
+              contentAPI.getContent({ limit: 100 }).then(res => setContent(res.data))
+              contentAPI.getContentStats().then(setStats)
+              setShowAssetPicker(false)
+            }}
+          />
         </div>
       )}
     </div>
